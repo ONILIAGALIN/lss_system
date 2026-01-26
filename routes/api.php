@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 Route::middleware(['throttle:login'])->group(function () {
-    Route::post("/login", [AuthController::class,"login"]);
+    Route::post("/login", action: [AuthController::class,"login"]);
+    Route::middleware("auth:sanctum")->get("/checkToken", [AuthController::class, "checkToken"]);
+
 });
 
 //Route::middleware(['auth:sanctum'])->resource('users', \App\Http\Controllers\FeedbackCategoryController::class);

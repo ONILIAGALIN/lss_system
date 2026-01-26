@@ -54,4 +54,14 @@ class AuthController extends Controller
             'message' => 'Logged out successfully'
         ], 200);
     }
+
+    public function checkToken(Request $request){
+        $user = $request->user();
+        $user->profile;
+        return response()->json([
+            "ok" => true,
+            "message" => "UserInfo has been retrieve!",
+            "data" => $user
+        ],200);
+    }
 }

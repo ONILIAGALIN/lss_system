@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('question_id')->constrained('feedback_questions');
             $table->foreignId('choice_id')->constrained('feedback_choices');
+            $table->text("comment");
             $table->timestamps();
         });
     }

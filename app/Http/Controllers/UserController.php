@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -138,44 +139,40 @@ class UserController extends Controller
     }
 
     public function exportUsersWithProfiles(){
-        $users = User::leftJoin('profiles', 'users.id', '=', 'profiles.user_id')
-            ->select(
-                'users.id','users.username','users.email','users.role',
-                'profiles.first_name','profiles.last_name',
-                'profiles.birth_date',
-            )
-            ->get();
-
+        // $users = User::leftJoin('profiles', 'users.id', '=', 'profiles.user_id')
+        //     ->select(
+        //         'users.id','users.username','users.email','users.role',
+        //         'profiles.first_name','profiles.last_name',
+        //         'profiles.birth_date',
+        //     )
+        //     ->get();
+        $users = User::with('profile')->get();
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-
-        // This is for header row. the more columns you have, the more you need to add here
         $sheet->setCellValue('A1', 'ID');
         $sheet->setCellValue('B1', 'Name');
         $sheet->setCellValue('C1', 'Email');
         $sheet->setCellValue('D1', 'Role');
         $sheet->setCellValue('E1', 'First Name');
-       // $sheet->setCellValue('F1', 'Middle Name');
+        $sheet->setCellValue('F1', 'Middle Name');
         $sheet->setCellValue('F1', 'Last Name');
         $sheet->setCellValue('G1', 'Birth Date');
 
         $row = 2;
         foreach ($users as $user) {
+      
             $sheet->setCellValue('A' . $row, $user->id);
             $sheet->setCellValue('B' . $row, $user->name);
             $sheet->setCellValue('C' . $row, $user->email);
             $sheet->setCellValue('D' . $row, $user->role);
-            $sheet->setCellValue('E' . $row, $user->first_name);
-          //  $sheet->setCellValue('F' . $row, $user->middle_name ?? '');
-            $sheet->setCellValue('F' . $row, $user->last_name);
-            $sheet->setCellValue('G' . $row, $user->birth_date);
-           // $sheet->setCellValue('I' . $row, $user->phone_number);
+            $sheet->setCellValue('E' . $row, $user->profile?->first_name ?$user->profile?->first_name : null);
+            $sheet->setCellValue('F' . $row, $user->profile?->middle_name ?$user->profile?->middle_name : null);
+            $sheet->setCellValue('F' . $row, $user->profile?->last_name);
+            $sheet->setCellValue('G' . $row, $user->profile?->birth_date);
             $row++;
         }
 
         $writer = new Xlsx($spreadsheet);
-
-        // Correct headers for Excel
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="users_profiles.xlsx"');
         header('Cache-Control: max-age=0');

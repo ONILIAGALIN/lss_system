@@ -11,7 +11,8 @@ class FeedbackResponseController extends Controller
         $validator = Validator::make($request->all(), [
             "user_id" => "required|exists:users,id",
             "question_id" => "required|exists:feedback_questions,id",
-            "choice_id" => "required|exists:feedback_choices,id"
+            "choice_id" => "required|exists:feedback_choices,id",
+            "comment" => "sometimes|string:min:2"
         ]);
         if($validator->fails()){
             return response()->json([
@@ -33,7 +34,8 @@ class FeedbackResponseController extends Controller
         $response = Feedback_response::create([
             "user_id" => $validated ["user_id"],
             "question_id" => $validated ["question_id"],
-            "choice_id" => $validated ["choice_id"]
+            "choice_id" => $validated ["choice_id"],
+            "comment" => $validated ["comment"] ?? null,
         ]);
         return response()->json([
             "ok" => true,
@@ -64,7 +66,8 @@ class FeedbackResponseController extends Controller
         $validator = Validator::make($request->all(),[
             "user_id" => "sometimes|exists:users,id",
             "question_id" => "sometimes|exists:questions,id",
-            "choice_id" => "sometimes|exists:choices,id"
+            "choice_id" => "sometimes|exists:choices,id",
+            "comment" => "nullable|string|min:2"
         ]);
         if($validator->fails()){
             return response()->json([
@@ -75,11 +78,14 @@ class FeedbackResponseController extends Controller
         }
 
         $validated = $validator->validated();
-        $response->update([
+       /* $response->update([
             "user_id" => $validated ["user_id"],
             "question_id" => $validated ["question_id"],
             "choice_id" => $validated ["choice_id"]
         ]);
+        */
+        $updateData = array_filter($validated, fn($v) => !is_null($v));
+        $response->update($updateData);
         return response()->json([
             "ok" => true,
             "message" => "Feedback response update successfully",

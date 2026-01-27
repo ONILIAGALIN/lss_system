@@ -10,6 +10,7 @@ class Feedback_response extends Model
         'user_id',
         'question_id',
         'choice_id',
+        'comment'
     ];
 
     public function user(){

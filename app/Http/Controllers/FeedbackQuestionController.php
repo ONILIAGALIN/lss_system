@@ -10,8 +10,8 @@ class FeedbackQuestionController extends Controller
 {
     public function store (Request $request){
         $validator = Validator::make($request->all(),[
-            "category_id" => "required|exist:categories,id",
-            "text" => "required|min:2",
+            "category_id" => "required|exists:feedback_categories,id",
+            "question" => "required|min:2",
             "is_active" => "required|boolean",
         ]);
         if($validator->fails()){
@@ -24,7 +24,7 @@ class FeedbackQuestionController extends Controller
         $validated = $validator->validated();
         $question = Feedback_question::create([
             "category_id" => $validated ["category_id"],
-            "text" => $validated ["text"],
+            "question" => $validated ["question"],
             "is_active" => $validated ["is_active"]
         ]);
         return response()->json([
@@ -35,10 +35,11 @@ class FeedbackQuestionController extends Controller
    }
 
     public function index (){
+        $question = Feedback_question::with(["category"])->get();
         return response()->json([
             "ok" => true,
             "message" => "Retrieved feedback question successfull",
-            "data" => Feedback_question::all()
+            "data" => $question
         ],200);
    }
 
@@ -53,7 +54,7 @@ class FeedbackQuestionController extends Controller
     public function update(Request $request, Feedback_question $question){
         $validator = Validator::make($request->all(), [
             "category_id" => "sometimes|exist:categories,id",
-            "text" => "sometimes|min:2",
+            "question" => "sometimes|min:2",
             "is_active" => "sometimes|boolean",
         ]);
         if($validator->fails()){
@@ -65,9 +66,9 @@ class FeedbackQuestionController extends Controller
         }
 
         $validated = $validator->validated();
-        $question = Feedback_question::update([
+        $question->update([
             "category_id" => $validated ["category_id"],
-            "text" => $validated ["text"],
+            "question" => $validated ["question"],
             "is_active" => $validated ["is_active"]
         ]);
         

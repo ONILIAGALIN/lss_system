@@ -8,7 +8,7 @@ class Feedback_question extends Model
 {
     protected $fillable = [
         'category_id',
-        'question_text',
+        'question',
         'is_active',
     ];
 

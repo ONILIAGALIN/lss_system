@@ -35,7 +35,7 @@ class FeedbackCategoryController extends Controller
         return response()->json([
             "ok" => true,
             "message" => "Feedback categories retrieved successfully",
-            "data" => Feedback_category::all()
+            "data" => Feedback_category::paginate(10)
         ],200);
     }
 

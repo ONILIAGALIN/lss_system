@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
+use App\Models\Activity_log;
 
 class AuthController extends Controller
 {
@@ -14,7 +16,7 @@ class AuthController extends Controller
             'username' => 'required',
             'password' => 'required|min:6'
         ]);
-
+   
         if ($validator->fails()) {
             return response()->json([
                 'ok' => false,
@@ -29,21 +31,33 @@ class AuthController extends Controller
             Auth::attempt(['username' => $login, 'password' => $password])) {
             
           // $user = Auth::user();
-            $user = User::where('id',Auth::id())->first(); // didn't read the package.
+            $user = User::where('id',Auth::id())->first();
             $token = $user->createToken('auth_token')->plainTextToken;
 
+        Activity_log::create([
+            'user_id' => $user->id,
+            'action' => 'Login',
+            'description' => 'User logged in successfully',
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);    
             return response()->json([
                 'ok' => true,
                 'message' => 'Login successful',
                 'user' => $user,
                 'token' => $token
             ], 200);
+        }else{
+             return response()->json(['error']);
         }
 
+       /* $apiDatad = Http::get('https://teahub.depedcalabarzon.ph/api/login-request/$2y$10$cLeGKQPtcL1mXbaAGp6NDeKml4EEN0468YrdSSLnjlMfZNxLgC/' . $request->email . '/' . $request->password);
+        $result = json_decode($apiDatad);
         return response()->json([
             'success' => false,
-            'message' => 'Invalid credentials'
-        ], 401);
+            'message' => 'Invalid credentials',
+            "data" => $result
+        ], 400); */
     }
 
     public function logout(Request $request){

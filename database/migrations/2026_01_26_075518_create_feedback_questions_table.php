@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('feedback_questions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->constrained('feedback_categories');
-            $table->text('question_text');
-            $table->boolean('is_active')->default(true);
+            $table->text('question');
+            $table->boolean('is_active')->default(1); // 1 = true, || 2 = false
             $table->timestamps();
         });
     }

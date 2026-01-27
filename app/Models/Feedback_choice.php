@@ -9,6 +9,7 @@ class Feedback_choice extends Model
      protected $fillable = [
         'question_id',
         'label',
+        'description',
         'text',
         'score',
     ];

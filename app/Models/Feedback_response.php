@@ -14,14 +14,14 @@ class Feedback_response extends Model
     ];
 
     public function user(){
-    return $this->belongsTo(User::class);
+    return $this->belongsTo(User::class, 'user_id');
     }
 
     public function question(){
-    return $this->belongsTo(Feedback_Question::class);
+    return $this->belongsTo(Feedback_Question::class, 'question_id');
     }
 
     public function choice(){
-    return $this->belongsTo(Feedback_Choice::class);
+    return $this->belongsTo(Feedback_Choice::class, 'choice_id');
     }
 }

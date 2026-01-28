@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('feedback_responses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('question_id')->constrained('feedback_questions');
-            $table->foreignId('choice_id')->constrained('feedback_choices');
-            $table->text("comment");
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('question_id')->constrained('feedback_questions')->onDelete('cascade');
+            $table->foreignId('choice_id')->constrained('feedback_choices')->onDelete('cascade');
+           // $table->text("comment");
             $table->timestamps();
         });
     }

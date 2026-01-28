@@ -12,7 +12,7 @@ class Feedback_category extends Model
     ];
 
     public function questions(){
-    return $this->hasMany(Feedback_Question::class);
+    return $this->hasMany(Feedback_Question::class, 'category_id');
     }
 
 }

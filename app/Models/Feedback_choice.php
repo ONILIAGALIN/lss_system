@@ -15,11 +15,11 @@ class Feedback_choice extends Model
     ];
 
     public function question(){
-    return $this->belongsTo(Feedback_Question::class);
+    return $this->belongsTo(Feedback_Question::class, 'question_id');
     }
 
 public function responses(){
-    return $this->hasMany(Feedback_Response::class);
+    return $this->hasMany(Feedback_Response::class, 'choice_id');
     }
 
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\ActivityLogController;
 Route::middleware(['throttle:login'])->group(function () {
     Route::post("/login", action: [AuthController::class,"login"]);
     Route::middleware("auth:sanctum")->get("/checkToken", [AuthController::class, "checkToken"]);
+    //Route::post('/logout', action:)
 
 });
 
@@ -61,7 +62,7 @@ Route::prefix("users")->group(function () {
 
  Route::prefix("responses")->group(function () {
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::get('/export-responses', [\App\Http\Controllers\FeedbackResponseController::class, 'exportResponse']);
+        Route::get('/export-responses', [\App\Http\Controllers\FeedbackResponseController::class, 'exportFeedback']);
         Route::get("/", [\App\Http\Controllers\FeedbackResponseController::class, "index"]);
         Route::post("/", [\App\Http\Controllers\FeedbackResponseController::class, "store"]);
         Route::get("/{responses}", [\App\Http\Controllers\FeedbackResponseController::class, "show"]);

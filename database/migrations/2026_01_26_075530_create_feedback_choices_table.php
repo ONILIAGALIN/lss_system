@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('feedback_choices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('question_id')->constrained('feedback_questions');
+            $table->foreignId('question_id')->constrained('feedback_questions')->onDelete('cascade');
             $table->enum('label', ['A', 'B', 'C', 'D', 'E',"N/A"])->default('N/A');
             $table->string('description', 255);
             $table->tinyInteger('score')->default(0);
